@@ -33,8 +33,6 @@ Install the joy-hooks plugin using the Claude Code plugin system:
 
 That's it! The plugin registers all necessary hooks automatically. Hooks silently do nothing when joy is not running, so no error messages will appear.
 
-> **Migrating from manual hooks?** If you previously added hooks to `~/.claude/settings.json` manually, remove the `hooks` section after installing the plugin to avoid duplicate events.
-
 ## Session States
 
 | State | Indicator | Description |
