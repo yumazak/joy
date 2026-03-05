@@ -5,19 +5,24 @@ type SessionListProps = {
   sessions: Readonly<SessionInfo>[];
 };
 
+const Divider = () => <box border={["bottom"]} borderColor="#444444" />;
+
 export const SessionList = ({ sessions }: SessionListProps) => {
   if (sessions.length === 0) {
     return (
       <text>
-        <span style={{ fg: "gray" }}>No active sessions</span>
+        <span>No active sessions</span>
       </text>
     );
   }
 
   return (
-    <box flexDirection="column" gap={1}>
-      {sessions.map((session) => (
-        <SessionRow key={session.sessionId} session={session} />
+    <box flexDirection="column">
+      {sessions.map((session, i) => (
+        <box key={session.sessionId} flexDirection="column">
+          <SessionRow session={session} />
+          {i < sessions.length - 1 && <Divider />}
+        </box>
       ))}
     </box>
   );

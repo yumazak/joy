@@ -17,12 +17,8 @@ export const App = ({ tracker }: AppProps) => {
   }, [tracker]);
 
   useEffect(() => {
-    const timer = setInterval(() => refresh(), 1000);
     const unsubscribe = tracker.onChange(refresh);
-    return () => {
-      clearInterval(timer);
-      unsubscribe();
-    };
+    return unsubscribe;
   }, [tracker, refresh]);
 
   return (
