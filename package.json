@@ -1,6 +1,6 @@
 {
   "name": "@yumazak/joy",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A terminal dashboard for monitoring Claude Code sessions in real-time.",
   "license": "MIT",
   "type": "module",
