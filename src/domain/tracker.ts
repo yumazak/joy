@@ -13,7 +13,7 @@ const toProjectName = (projectPath: string): string => {
   }
 
   const parts = normalized.split("/").filter(Boolean);
-  return parts.length > 0 ? parts[parts.length - 1] : "unknown";
+  return parts.at(-1) ?? "unknown";
 };
 
 const toPreview = (value?: string): string | undefined => {
@@ -21,14 +21,19 @@ const toPreview = (value?: string): string | undefined => {
     return undefined;
   }
 
-  const firstLine = value.split(/\r?\n/u, 1)[0].trim();
+  const firstLine = value.split(/\r?\n/u, 1)[0];
   if (!firstLine) {
     return undefined;
   }
 
-  const chars = Array.from(firstLine);
+  const trimmed = firstLine.trim();
+  if (!trimmed) {
+    return undefined;
+  }
+
+  const chars = Array.from(trimmed);
   if (chars.length <= PREVIEW_LIMIT) {
-    return firstLine;
+    return trimmed;
   }
 
   return `${chars.slice(0, PREVIEW_LIMIT).join("")}…`;
@@ -106,7 +111,11 @@ export const createTracker = () => {
         session.state = "Processing";
         session.lastMessage = toPreview(payload.prompt);
         break;
+      case "PreToolUse":
       case "PostToolUse":
+      case "PostToolUseFailure":
+      case "SubagentStart":
+      case "SubagentStop":
         session.state = "Processing";
         break;
       case "PermissionRequest":

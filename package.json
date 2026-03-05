@@ -1,13 +1,35 @@
 {
   "name": "@yumazak/joy",
   "version": "0.1.0",
+  "description": "A terminal dashboard for monitoring Claude Code sessions in real-time.",
+  "license": "MIT",
   "type": "module",
   "bin": {
     "joy": "src/main.tsx"
   },
   "files": [
-    "src"
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "!src/**/*.test.ts"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yumazak/joy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yumazak/joy/issues"
+  },
+  "homepage": "https://github.com/yumazak/joy#readme",
+  "keywords": [
+    "claude-code",
+    "tui",
+    "hono",
+    "bun",
+    "terminal"
+  ],
+  "engines": {
+    "bun": ">=1.2.0"
+  },
   "scripts": {
     "dev": "bun run src/main.tsx",
     "start": "bun run src/main.tsx",

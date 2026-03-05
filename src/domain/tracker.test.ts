@@ -20,6 +20,18 @@ describe("SessionTracker", () => {
     tracker.handleEvent({ session_id: "s1", hook_event_name: "PermissionRequest" }, 1200);
     expect(tracker.getSessions()[0]?.state).toBe("WaitingApproval");
 
+    tracker.handleEvent({ session_id: "s1", hook_event_name: "PreToolUse" }, 1250);
+    expect(tracker.getSessions()[0]?.state).toBe("Processing");
+
+    tracker.handleEvent({ session_id: "s1", hook_event_name: "PostToolUseFailure" }, 1260);
+    expect(tracker.getSessions()[0]?.state).toBe("Processing");
+
+    tracker.handleEvent({ session_id: "s1", hook_event_name: "SubagentStart" }, 1270);
+    expect(tracker.getSessions()[0]?.state).toBe("Processing");
+
+    tracker.handleEvent({ session_id: "s1", hook_event_name: "SubagentStop" }, 1280);
+    expect(tracker.getSessions()[0]?.state).toBe("Processing");
+
     tracker.handleEvent({ session_id: "s1", hook_event_name: "Stop" }, 1300);
     expect(tracker.getSessions()[0]?.state).toBe("WaitingInput");
   });

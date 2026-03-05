@@ -29,4 +29,34 @@ describe("POST /hooks", () => {
       lastMessage: "Implement feature",
     });
   });
+
+  it("returns 400 when JSON is invalid", async () => {
+    const tracker = createTracker();
+    const app = createApp(tracker);
+
+    const res = await app.request("/hooks", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: "{ invalid-json",
+    });
+
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 400 when hook_event_name is not a string", async () => {
+    const tracker = createTracker();
+    const app = createApp(tracker);
+
+    const res = await app.request("/hooks", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        session_id: "session-1",
+        cwd: "/work/my-project",
+        hook_event_name: 123,
+      }),
+    });
+
+    expect(res.status).toBe(400);
+  });
 });
