@@ -1,3 +1,5 @@
+import { z } from "zod/v4";
+
 export type SessionState = "Processing" | "WaitingApproval" | "WaitingInput";
 
 export type SessionInfo = {
@@ -9,10 +11,12 @@ export type SessionInfo = {
   lastMessage?: string;
 };
 
-export type HookPayload = {
-  session_id?: string;
-  cwd?: string;
-  hook_event_name: string;
-  prompt?: string;
-  last_assistant_message?: string;
-};
+export const hookPayloadSchema = z.object({
+  session_id: z.string().optional(),
+  cwd: z.string().optional(),
+  hook_event_name: z.string(),
+  prompt: z.string().optional(),
+  last_assistant_message: z.string().optional(),
+});
+
+export type HookPayload = z.infer<typeof hookPayloadSchema>;
