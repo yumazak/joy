@@ -1,3 +1,4 @@
+import { Box, useStdout } from "ink";
 import { useCallback, useEffect, useState } from "react";
 import type { SessionTracker } from "../domain/tracker";
 import type { SessionInfo } from "../domain/types";
@@ -8,9 +9,17 @@ type AppProps = {
 };
 
 export const App = ({ tracker }: AppProps) => {
+  const { stdout } = useStdout();
+  const [rows, setRows] = useState(stdout.rows);
   const [sessions, setSessions] = useState<Readonly<SessionInfo>[]>(() =>
     tracker.getSessions(),
   );
+
+  useEffect(() => {
+    const onResize = () => setRows(stdout.rows);
+    stdout.on("resize", onResize);
+    return () => { stdout.off("resize", onResize); };
+  }, [stdout]);
 
   const refresh = useCallback(() => {
     setSessions(tracker.getSessions());
@@ -22,8 +31,8 @@ export const App = ({ tracker }: AppProps) => {
   }, [tracker, refresh]);
 
   return (
-    <box flexDirection="column" padding={1}>
+    <Box flexDirection="column" padding={1} height={rows}>
       <SessionList sessions={sessions} />
-    </box>
+    </Box>
   );
 };

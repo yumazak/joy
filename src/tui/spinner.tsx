@@ -1,3 +1,4 @@
+import { Text } from "ink";
 import { useEffect, useState } from "react";
 
 const FRAMES = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
@@ -14,5 +15,5 @@ export const Spinner = ({ color = "white" }: SpinnerProps) => {
     return () => clearInterval(timer);
   }, []);
 
-  return <span style={{ fg: color }}>{FRAMES[tick % FRAMES.length]}</span>;
+  return <Text color={color}>{FRAMES[tick % FRAMES.length]}</Text>;
 };

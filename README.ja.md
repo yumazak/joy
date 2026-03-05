@@ -9,14 +9,8 @@
 ## インストール
 
 ```bash
-bun i -g @yumazak/joy
-
-# or
 npm i -g @yumazak/joy
 ```
-
-> [!NOTE]
-> Bun ランタイムが必要です。[OpenTUI](https://github.com/anomalyco/opentui) が Bun に依存しています。
 
 ## 使い方
 
@@ -88,17 +82,17 @@ Claude Code が各 hook イベントでセッション情報（セッション I
 ## 開発
 
 ```bash
-bun install
-bun run dev      # 開発サーバー起動
-bun run test     # テスト実行
-bun run lint     # リンター実行
+pnpm install
+pnpm run dev      # 開発サーバー起動
+pnpm run test     # テスト実行
+pnpm run lint     # リンター実行
 ```
 
 ## 技術スタック
 
-- [OpenTUI](https://github.com/anomalyco/opentui) - React ベースのターミナル UI
+- [Ink](https://github.com/vadimdemedes/ink) - React ベースのターミナル UI
 - [Hono](https://hono.dev) - HTTP サーバー
-- [Bun](https://bun.sh) - ランタイム
+- [Node.js](https://nodejs.org) - ランタイム
 
 ## ライセンス
 

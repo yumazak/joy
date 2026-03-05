@@ -1,3 +1,4 @@
+import { Box, Text } from "ink";
 import { formatTime } from "../domain/format-time";
 import type { SessionInfo, SessionState } from "../domain/types";
 import { Spinner } from "./spinner";
@@ -23,25 +24,25 @@ export const SessionRow = ({ session }: SessionRowProps) => {
   const time = formatTime(session.lastActivityMs);
 
   return (
-    <box flexDirection="column">
-      <box flexDirection="row" columnGap={1}>
-        <text>
+    <Box flexDirection="column">
+      <Box flexDirection="row" columnGap={1}>
+        <Text>
           {session.state === "Processing" ? (
             <Spinner color={color} />
           ) : (
-            <span style={{ fg: color }}>{STATE_ICON[session.state]}</span>
+            <Text color={color}>{STATE_ICON[session.state]}</Text>
           )}
-        </text>
-        <text>
-          <strong>{session.projectName}</strong>
-          <span style={{ fg: "#999999" }}> {time}</span>
-        </text>
-      </box>
+        </Text>
+        <Text>
+          <Text bold>{session.projectName}</Text>
+          <Text color="#999999"> {time}</Text>
+        </Text>
+      </Box>
       {session.lastMessage && (
-        <text wrapMode="none" height={1}>
-          <strong style={{ fg: "#aaaaaa" }}>{session.lastMessage}</strong>
-        </text>
+        <Text wrap="truncate">
+          <Text bold color="#aaaaaa">{session.lastMessage}</Text>
+        </Text>
       )}
-    </box>
+    </Box>
   );
 };

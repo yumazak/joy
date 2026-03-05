@@ -1,6 +1,5 @@
-#!/usr/bin/env bun
-import { createCliRenderer } from "@opentui/core";
-import { createRoot } from "@opentui/react";
+import { serve } from "@hono/node-server";
+import { render } from "ink";
 import { createTracker } from "./domain/tracker";
 import { createApp } from "./server/app";
 import { App } from "./tui/app";
@@ -11,17 +10,9 @@ const PORT = 50055;
 const tracker = createTracker();
 const app = createApp(tracker);
 
-const server = Bun.serve({
-  hostname: HOST,
-  port: PORT,
-  fetch: app.fetch,
-});
+const server = serve({ fetch: app.fetch, hostname: HOST, port: PORT });
 
-const renderer = await createCliRenderer({
-  onDestroy: () => {
-    void server.stop(true);
-  },
-});
+const { waitUntilExit } = render(<App tracker={tracker} />);
 
-const root = createRoot(renderer);
-root.render(<App tracker={tracker} />);
+await waitUntilExit();
+server.close();

@@ -3,10 +3,10 @@ pre-commit:
   commands:
     lint:
       glob: "*.{ts,tsx}"
-      run: bun run lint
+      run: pnpm run lint
     test:
-      run: bun run test
+      run: pnpm run test
 pre-push:
   commands:
     test:
-      run: bun run test
+      run: pnpm run test

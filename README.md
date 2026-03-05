@@ -11,14 +11,8 @@ Joy displays all active Claude Code sessions with their current state, project n
 ## Install
 
 ```bash
-bun i -g @yumazak/joy
-
-# or
 npm i -g @yumazak/joy
 ```
-
-> [!NOTE]
-> Bun runtime is required. The app uses [OpenTUI](https://github.com/anomalyco/opentui) which depends on Bun.
 
 ## Usage
 
@@ -90,17 +84,17 @@ Claude Code automatically sends session context (session ID, cwd, hook event nam
 ## Development
 
 ```bash
-bun install
-bun run dev      # Start development server
-bun run test     # Run tests
-bun run lint     # Run linter
+pnpm install
+pnpm run dev      # Start development server
+pnpm run test     # Run tests
+pnpm run lint     # Run linter
 ```
 
 ## Tech Stack
 
-- [OpenTUI](https://github.com/anomalyco/opentui) - React-based terminal UI
+- [Ink](https://github.com/vadimdemedes/ink) - React-based terminal UI
 - [Hono](https://hono.dev) - HTTP server
-- [Bun](https://bun.sh) - Runtime
+- [Node.js](https://nodejs.org) - Runtime
 
 ## License
 

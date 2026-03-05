@@ -1,3 +1,4 @@
+import { Box, Text } from "ink";
 import type { SessionInfo } from "../domain/types";
 import { SessionRow } from "./session-row";
 
@@ -5,25 +6,23 @@ type SessionListProps = {
   sessions: Readonly<SessionInfo>[];
 };
 
-const Divider = () => <box border={["bottom"]} borderColor="#444444" />;
+const Divider = () => (
+  <Box borderStyle="single" borderTop={false} borderLeft={false} borderRight={false} borderColor="gray" />
+);
 
 export const SessionList = ({ sessions }: SessionListProps) => {
   if (sessions.length === 0) {
-    return (
-      <text>
-        <span>No active sessions</span>
-      </text>
-    );
+    return <Text>No active sessions</Text>;
   }
 
   return (
-    <box flexDirection="column">
+    <Box flexDirection="column">
       {sessions.map((session, i) => (
-        <box key={session.sessionId} flexDirection="column">
+        <Box key={session.sessionId} flexDirection="column">
           <SessionRow session={session} />
           {i < sessions.length - 1 && <Divider />}
-        </box>
+        </Box>
       ))}
-    </box>
+    </Box>
   );
 };
