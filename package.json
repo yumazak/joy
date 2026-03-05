@@ -11,7 +11,7 @@
     "lint": "oxlint --type-aware --type-check src"
   },
   "dependencies": {
-    "@opentui/core": "latest",
+    "@opentui/core": "^0.1.86",
     "@opentui/react": "^0.1.86",
     "hono": "^4.9.8",
     "react": "^19.2.4"
@@ -22,6 +22,6 @@
     "oxlint": "^1.17.0",
     "oxlint-tsgolint": "^0.16.0",
     "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.18"
   }
 }

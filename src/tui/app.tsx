@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import type { SessionInfo } from "../domain/types";
 import type { SessionTracker } from "../domain/tracker";
+import type { SessionInfo } from "../domain/types";
 import { SessionList } from "./session-list";
 
 type AppProps = {
@@ -27,10 +27,6 @@ export const App = ({ tracker }: AppProps) => {
 
   return (
     <box flexDirection="column" padding={1}>
-      <text>
-        <strong>joy</strong>
-        <span> sessions</span>
-      </text>
       <SessionList sessions={sessions} />
     </box>
   );
