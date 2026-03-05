@@ -1,11 +1,14 @@
 import { Hono } from "hono";
+import { bodyLimit } from "hono/body-limit";
 import type { HookPayload } from "../domain/types";
 import type { SessionTracker } from "../domain/tracker";
+
+const MAX_BODY_SIZE = 1024 * 1024; // 1MB
 
 export const createApp = (tracker: SessionTracker): Hono => {
   const app = new Hono();
 
-  app.post("/hooks", async (c) => {
+  app.post("/hooks", bodyLimit({ maxSize: MAX_BODY_SIZE }), async (c) => {
     let payload: unknown;
     try {
       payload = await c.req.json();
