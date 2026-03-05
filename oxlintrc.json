@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "style": "off"
+  },
+  "ignorePatterns": ["node_modules", "target", "dist"]
+}

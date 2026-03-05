@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "skills": {
+    "bun-development": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "computedHash": "2495ba6f5ade951aea79cd76303c29173edb5512fb4b4e896b2cf763b86af466"
+    },
+    "hono": {
+      "source": "yusukebe/hono-skill",
+      "sourceType": "github",
+      "computedHash": "c7a4ae9efeb7ef47c6473ee4d636fced825a0c26b25372a49417075f6d566af6"
+    },
+    "opentui": {
+      "source": "msmps/opentui-skill",
+      "sourceType": "github",
+      "computedHash": "2255043508a64062e44f6de2243dbcb06de97ceefa30357da77affac355c3eee"
+    },
+    "oxfmt-oxlint": {
+      "source": "upamune/radicaster",
+      "sourceType": "github",
+      "computedHash": "f20aba3952e3cacde5adf7934aeef7f1e364a8cb23a6559e5abd6441d5c3accf"
+    },
+    "vitest": {
+      "source": "antfu/skills",
+      "sourceType": "github",
+      "computedHash": "669c7275f7e1379b06b2bcfa593603aead4c983b951c7e8edbc09640aa38d0a1"
+    }
+  }
+}

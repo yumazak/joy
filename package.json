@@ -1,0 +1,27 @@
+{
+  "name": "joy",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run src/main.tsx",
+    "start": "bun run src/main.tsx",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "oxlint --type-aware --type-check src"
+  },
+  "dependencies": {
+    "@opentui/core": "latest",
+    "@opentui/react": "^0.1.86",
+    "hono": "^4.9.8",
+    "react": "^19.2.4"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/react": "^19.2.14",
+    "oxlint": "^1.17.0",
+    "oxlint-tsgolint": "^0.16.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}
