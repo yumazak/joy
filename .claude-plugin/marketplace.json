@@ -1,0 +1,13 @@
+{
+  "name": "joy",
+  "owner": {
+    "name": "yumazak"
+  },
+  "plugins": [
+    {
+      "name": "joy-hooks",
+      "source": "./plugin",
+      "description": "Hooks for joy - Claude Code session monitor"
+    }
+  ]
+}

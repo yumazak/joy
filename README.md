@@ -24,66 +24,16 @@ Joy starts a local HTTP server on `127.0.0.1:50055` and renders a TUI dashboard.
 
 ## Claude Code Hooks Setup
 
-Add the following hooks to `~/.claude/settings.json`:
+Install the joy-hooks plugin using the Claude Code plugin system:
 
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "PostToolUseFailure": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "SubagentStart": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ]
-  }
-}
+```
+/plugin marketplace add https://github.com/yumazak/joy
+/plugin install joy-hooks@joy
 ```
 
-Claude Code automatically sends session context (session ID, cwd, hook event name, messages) with each hook event.
+That's it! The plugin registers all necessary hooks automatically. Hooks silently do nothing when joy is not running, so no error messages will appear.
+
+> **Migrating from manual hooks?** If you previously added hooks to `~/.claude/settings.json` manually, remove the `hooks` section after installing the plugin to avoid duplicate events.
 
 ## Session States
 

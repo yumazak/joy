@@ -22,66 +22,16 @@ joy
 
 ## Claude Code Hooks の設定
 
-`~/.claude/settings.json` に以下の hooks を追加してください:
+Claude Code のプラグインシステムで joy-hooks プラグインをインストールしてください:
 
-```json
-{
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "PostToolUseFailure": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "SubagentStart": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
-      }
-    ]
-  }
-}
+```
+/plugin marketplace add https://github.com/yumazak/joy
+/plugin install joy-hooks@joy
 ```
 
-Claude Code が各 hook イベントでセッション情報（セッション ID、cwd、イベント名、メッセージ）を自動送信します。
+これだけで完了です。必要な hooks はプラグインが自動で登録します。joy が起動していない時も hooks はエラーを出さずに静かに何もしません。
+
+> **手動で hooks を設定していた方へ:** 以前 `~/.claude/settings.json` に hooks を直接追加していた場合は、プラグインインストール後に `hooks` セクションを削除してください（重複イベントを避けるため）。
 
 ## セッション状態
 
