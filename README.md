@@ -54,7 +54,27 @@ Add the following hooks to `~/.claude/settings.json`:
         "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
       }
     ],
+    "PreToolUse": [
+      {
+        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
+      }
+    ],
     "PostToolUse": [
+      {
+        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
+      }
+    ],
+    "SubagentStop": [
       {
         "hooks": [{ "type": "http", "url": "http://127.0.0.1:50055/hooks" }]
       }
