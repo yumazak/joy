@@ -6,5 +6,5 @@ export default defineConfig({
   target: "node18",
   banner: { js: "#!/usr/bin/env node" },
   clean: true,
-  external: ["react", "ink", "hono", "@hono/node-server", "gunshi"],
+  external: ["react", "ink", "ink-scroll-view", "hono", "@hono/node-server", "gunshi"],
 });
