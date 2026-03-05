@@ -26,7 +26,7 @@ Joy starts a local HTTP server on `127.0.0.1:50055` and renders a TUI dashboard.
 
 Install the joy-hooks plugin using the Claude Code plugin system:
 
-```
+```sh
 /plugin marketplace add https://github.com/yumazak/joy
 /plugin install joy-hooks@joy
 ```
@@ -37,9 +37,9 @@ That's it! The plugin registers all necessary hooks automatically. Hooks silentl
 
 | State | Indicator | Description |
 |-------|-----------|-------------|
-| Processing | Spinner (cyan) | Claude is actively working |
-| WaitingApproval | Yellow dot | Waiting for tool use approval |
-| WaitingInput | Green dot | Waiting for user input |
+| Processing | 🔄 | Claude is actively working |
+| WaitingApproval | 🟡 | Waiting for tool use approval |
+| WaitingInput | 🟢 | Waiting for user input |
 
 ## Hook Events
 

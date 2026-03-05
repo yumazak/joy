@@ -24,7 +24,7 @@ joy
 
 Claude Code のプラグインシステムで joy-hooks プラグインをインストールしてください:
 
-```
+```sh
 /plugin marketplace add https://github.com/yumazak/joy
 /plugin install joy-hooks@joy
 ```
@@ -35,9 +35,9 @@ Claude Code のプラグインシステムで joy-hooks プラグインをイン
 
 | 状態 | 表示 | 説明 |
 |------|------|------|
-| Processing | スピナー (シアン) | Claude が作業中 |
-| WaitingApproval | 黄色の丸 | ツール使用の承認待ち |
-| WaitingInput | 緑の丸 | ユーザー入力待ち |
+| Processing | 🔄 | Claude が作業中 |
+| WaitingApproval | 🟡 | ツール使用の承認待ち |
+| WaitingInput | 🟢 | ユーザー入力待ち |
 
 ## Hook イベント
 
