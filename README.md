@@ -22,6 +22,19 @@ joy
 
 Joy starts a local HTTP server on `127.0.0.1:50055` and renders a TUI dashboard.
 
+### Options
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--port`, `-p` | Port for the HTTP server | `50055` |
+
+### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `JOY_PORT` | Port used by the hook script | `50055` |
+| `JOY_URL` | Full URL for the hook endpoint | `http://127.0.0.1:${JOY_PORT}/hooks` |
+
 ## Claude Code Hooks Setup
 
 Install the joy-hooks plugin using the Claude Code plugin system:
