@@ -35,11 +35,11 @@ joy
 
 ## Claude Code Hooks の設定
 
-Claude Code のプラグインシステムで joy-hooks プラグインをインストールしてください:
+Claude Code CLI で joy-hooks プラグインをインストールしてください:
 
 ```sh
-/plugin marketplace add https://github.com/yumazak/joy
-/plugin install joy-hooks@joy
+claude plugin marketplace add https://github.com/yumazak/joy
+claude plugin install joy-hooks@joy
 ```
 
 これだけで完了です。必要な hooks はプラグインが自動で登録します。joy が起動していない時も hooks はエラーを出さずに静かに何もしません。
