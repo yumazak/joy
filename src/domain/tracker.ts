@@ -1,4 +1,5 @@
 import type { HookPayload, SessionInfo, SessionState } from "./types";
+import { sendNotification } from "./notifier";
 
 const PREVIEW_LIMIT = 100;
 
@@ -120,10 +121,18 @@ export const createTracker = () => {
         break;
       case "PermissionRequest":
         session.state = "WaitingApproval";
+        sendNotification(
+          `[${session.projectName}] Approval Required`,
+          payload.hook_event_name,
+        );
         break;
       case "Stop":
         session.state = "WaitingInput";
         session.lastMessage = toPreview(payload.last_assistant_message);
+        sendNotification(
+          `[${session.projectName}] Waiting for Input`,
+          session.lastMessage ?? payload.hook_event_name,
+        );
         break;
       default:
         break;
