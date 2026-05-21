@@ -3,15 +3,6 @@ import { formatTime } from "../domain/format-time";
 import type { SessionInfo, SessionState } from "../domain/types";
 import { Spinner } from "./spinner";
 
-const wrapOsc8 = (url: string, text: string): string =>
-  `\x1b]8;;${url}\x1b\\${text}\x1b]8;;\x1b\\`;
-
-const toVscodeLink = (projectPath: string, name: string): string => {
-  if (!projectPath || projectPath === "unknown") return name;
-  const encoded = projectPath.split("/").map(encodeURIComponent).join("/");
-  return wrapOsc8(`vscode://file${encoded}`, name);
-};
-
 const STATE_COLOR: Record<SessionState, string> = {
   Processing: "#06b6d4",
   WaitingApproval: "#f59e0b",
@@ -31,7 +22,7 @@ type SessionRowProps = {
 export const SessionRow = ({ session }: SessionRowProps) => {
   const color = STATE_COLOR[session.state];
   const time = formatTime(session.lastActivityMs);
-  const projectLabel = toVscodeLink(session.projectPath, session.projectName);
+  const hasMessage = !!session.lastMessage;
 
   return (
     <Box flexDirection="column">
@@ -43,15 +34,18 @@ export const SessionRow = ({ session }: SessionRowProps) => {
             <Text color={color}>{STATE_ICON[session.state]}</Text>
           )}
         </Text>
-        <Text>
-          <Text bold>{projectLabel}</Text>
-          <Text color="#999999"> {time}</Text>
-        </Text>
+        {hasMessage ? (
+          <Text wrap="truncate">
+            <Text bold color="#aaaaaa">{session.lastMessage}</Text>
+          </Text>
+        ) : (
+          <Text color="#999999">{time}</Text>
+        )}
       </Box>
-      {session.lastMessage && (
-        <Text wrap="truncate">
-          <Text bold color="#aaaaaa">{session.lastMessage}</Text>
-        </Text>
+      {hasMessage && (
+        <Box paddingLeft={2}>
+          <Text color="#777777">{time}</Text>
+        </Box>
       )}
     </Box>
   );
