@@ -3,6 +3,15 @@ import { formatTime } from "../domain/format-time";
 import type { SessionInfo, SessionState } from "../domain/types";
 import { Spinner } from "./spinner";
 
+const wrapOsc8 = (url: string, text: string): string =>
+  `\x1b]8;;${url}\x1b\\${text}\x1b]8;;\x1b\\`;
+
+const toVscodeLink = (projectPath: string, name: string): string => {
+  if (!projectPath || projectPath === "unknown") return name;
+  const encoded = projectPath.split("/").map(encodeURIComponent).join("/");
+  return wrapOsc8(`vscode://file${encoded}`, name);
+};
+
 const STATE_COLOR: Record<SessionState, string> = {
   Processing: "#06b6d4",
   WaitingApproval: "#f59e0b",
@@ -22,6 +31,7 @@ type SessionRowProps = {
 export const SessionRow = ({ session }: SessionRowProps) => {
   const color = STATE_COLOR[session.state];
   const time = formatTime(session.lastActivityMs);
+  const projectLabel = toVscodeLink(session.projectPath, session.projectName);
 
   return (
     <Box flexDirection="column">
@@ -34,7 +44,7 @@ export const SessionRow = ({ session }: SessionRowProps) => {
           )}
         </Text>
         <Text>
-          <Text bold>{session.projectName}</Text>
+          <Text bold>{projectLabel}</Text>
           <Text color="#999999"> {time}</Text>
         </Text>
       </Box>
