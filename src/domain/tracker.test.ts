@@ -26,13 +26,20 @@ describe("SessionTracker", () => {
     tracker.handleEvent({ session_id: "s1", hook_event_name: "PostToolUseFailure" }, 1260);
     expect(tracker.getSessions()[0]?.state).toBe("Processing");
 
-    tracker.handleEvent({ session_id: "s1", hook_event_name: "SubagentStart" }, 1270);
-    expect(tracker.getSessions()[0]?.state).toBe("Processing");
-
-    tracker.handleEvent({ session_id: "s1", hook_event_name: "SubagentStop" }, 1280);
-    expect(tracker.getSessions()[0]?.state).toBe("Processing");
-
     tracker.handleEvent({ session_id: "s1", hook_event_name: "Stop" }, 1300);
+    expect(tracker.getSessions()[0]?.state).toBe("WaitingInput");
+  });
+
+  it("keeps WaitingInput when subagent (e.g. recap) runs after Stop", () => {
+    const tracker = createTracker();
+    tracker.handleEvent({ session_id: "s1", cwd: "/tmp/a", hook_event_name: "SessionStart" }, 1000);
+    tracker.handleEvent({ session_id: "s1", hook_event_name: "Stop" }, 2000);
+    expect(tracker.getSessions()[0]?.state).toBe("WaitingInput");
+
+    tracker.handleEvent({ session_id: "s1", hook_event_name: "SubagentStart" }, 2100);
+    expect(tracker.getSessions()[0]?.state).toBe("WaitingInput");
+
+    tracker.handleEvent({ session_id: "s1", hook_event_name: "SubagentStop" }, 2200);
     expect(tracker.getSessions()[0]?.state).toBe("WaitingInput");
   });
 

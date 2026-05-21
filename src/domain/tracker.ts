@@ -115,8 +115,6 @@ export const createTracker = () => {
       case "PreToolUse":
       case "PostToolUse":
       case "PostToolUseFailure":
-      case "SubagentStart":
-      case "SubagentStop":
         session.state = "Processing";
         break;
       case "PermissionRequest":
