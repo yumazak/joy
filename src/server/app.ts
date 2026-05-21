@@ -1,9 +1,18 @@
+import { appendFile } from "node:fs/promises";
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import { hookPayloadSchema } from "../domain/types";
 import type { SessionTracker } from "../domain/tracker";
 
 const MAX_BODY_SIZE = 1024 * 1024; // 1MB
+
+const eventLogPath = process.env.JOY_EVENT_LOG;
+
+const logPayload = (raw: unknown): void => {
+  if (!eventLogPath) return;
+  const line = `${JSON.stringify({ at: new Date().toISOString(), payload: raw })}\n`;
+  appendFile(eventLogPath, line).catch(() => {});
+};
 
 export const createApp = (tracker: SessionTracker): Hono => {
   const app = new Hono();
@@ -15,6 +24,8 @@ export const createApp = (tracker: SessionTracker): Hono => {
     } catch {
       return c.json({ error: "Invalid JSON" }, 400);
     }
+
+    logPayload(raw);
 
     const result = hookPayloadSchema.safeParse(raw);
     if (!result.success) {
