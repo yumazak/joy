@@ -22,31 +22,21 @@ type SessionRowProps = {
 export const SessionRow = ({ session }: SessionRowProps) => {
   const color = STATE_COLOR[session.state];
   const time = formatTime(session.lastActivityMs);
-  const hasMessage = !!session.lastMessage;
+  const message = session.lastMessage ?? "";
 
   return (
-    <Box flexDirection="column">
-      <Box flexDirection="row" columnGap={1}>
-        <Text>
-          {session.state === "Processing" ? (
-            <Spinner color={color} />
-          ) : (
-            <Text color={color}>{STATE_ICON[session.state]}</Text>
-          )}
-        </Text>
-        {hasMessage ? (
-          <Text wrap="truncate">
-            <Text bold color="#aaaaaa">{session.lastMessage}</Text>
-          </Text>
+    <Box flexDirection="row" columnGap={2}>
+      <Text>
+        {session.state === "Processing" ? (
+          <Spinner color={color} />
         ) : (
-          <Text color="#999999">{time}</Text>
+          <Text color={color}>{STATE_ICON[session.state]}</Text>
         )}
+      </Text>
+      <Box flexGrow={1}>
+        <Text wrap="truncate" bold color="#aaaaaa">{message}</Text>
       </Box>
-      {hasMessage && (
-        <Box paddingLeft={2}>
-          <Text color="#777777">{time}</Text>
-        </Box>
-      )}
+      <Text color="#777777">{time}</Text>
     </Box>
   );
 };
