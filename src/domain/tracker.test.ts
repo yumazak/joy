@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { createTracker } from "./tracker";
 
+const flushMicrotasks = (): Promise<void> =>
+  new Promise((resolve) => setImmediate(resolve));
+
 describe("SessionTracker", () => {
   it("ignores payload without session_id", () => {
     const tracker = createTracker();
@@ -116,10 +119,108 @@ describe("SessionTracker", () => {
     expect(tracker.getSessions()[0]?.projectName).toBe("unknown");
   });
 
-  it("resets cwd to unknown on SessionStart without cwd", () => {
+  it("does not overwrite projectPath on subsequent payload cwd changes", () => {
     const tracker = createTracker();
-    tracker.handleEvent({ session_id: "s1", cwd: "/tmp/a", hook_event_name: "SessionStart" }, 1000);
-    tracker.handleEvent({ session_id: "s1", hook_event_name: "SessionStart" }, 2000);
-    expect(tracker.getSessions()[0]?.projectName).toBe("unknown");
+    tracker.handleEvent(
+      { session_id: "s1", cwd: "/Users/me/launch", hook_event_name: "SessionStart" },
+      1000,
+    );
+    tracker.handleEvent(
+      {
+        session_id: "s1",
+        cwd: "/Users/me/launch/packages/functions",
+        hook_event_name: "UserPromptSubmit",
+        prompt: "hi",
+      },
+      2000,
+    );
+
+    const session = tracker.getSessions()[0];
+    expect(session?.projectPath).toBe("/Users/me/launch");
+    expect(session?.projectName).toBe("launch");
+  });
+
+  it("resolves launch cwd from transcript_path and overrides initial payload cwd", async () => {
+    const tracker = createTracker({
+      resolveLaunchCwd: async (path) => {
+        expect(path).toBe("/tmp/transcript.jsonl");
+        return "/Users/me/launch-dir";
+      },
+    });
+
+    tracker.handleEvent(
+      {
+        session_id: "s1",
+        cwd: "/Users/me/launch-dir/packages/functions",
+        transcript_path: "/tmp/transcript.jsonl",
+        hook_event_name: "UserPromptSubmit",
+        prompt: "hi",
+      },
+      1000,
+    );
+
+    expect(tracker.getSessions()[0]?.projectName).toBe("functions");
+
+    await flushMicrotasks();
+    expect(tracker.getSessions()[0]?.projectPath).toBe("/Users/me/launch-dir");
+    expect(tracker.getSessions()[0]?.projectName).toBe("launch-dir");
+  });
+
+  it("resolves launch cwd only once per session", async () => {
+    let calls = 0;
+    const tracker = createTracker({
+      resolveLaunchCwd: async () => {
+        calls += 1;
+        return "/Users/me/launch-dir";
+      },
+    });
+
+    tracker.handleEvent(
+      {
+        session_id: "s1",
+        cwd: "/initial",
+        transcript_path: "/tmp/t.jsonl",
+        hook_event_name: "SessionStart",
+      },
+      1000,
+    );
+    tracker.handleEvent(
+      {
+        session_id: "s1",
+        cwd: "/other",
+        transcript_path: "/tmp/t.jsonl",
+        hook_event_name: "UserPromptSubmit",
+        prompt: "hi",
+      },
+      2000,
+    );
+
+    await flushMicrotasks();
+    expect(calls).toBe(1);
+    expect(tracker.getSessions()[0]?.projectPath).toBe("/Users/me/launch-dir");
+  });
+
+  it("re-resolves launch cwd after SessionEnd recreates the session id", async () => {
+    let calls = 0;
+    const tracker = createTracker({
+      resolveLaunchCwd: async () => {
+        calls += 1;
+        return "/Users/me/launch-dir";
+      },
+    });
+
+    tracker.handleEvent(
+      { session_id: "s1", transcript_path: "/tmp/t.jsonl", hook_event_name: "SessionStart" },
+      1000,
+    );
+    await flushMicrotasks();
+    tracker.handleEvent({ session_id: "s1", hook_event_name: "SessionEnd" }, 1500);
+
+    tracker.handleEvent(
+      { session_id: "s1", transcript_path: "/tmp/t.jsonl", hook_event_name: "SessionStart" },
+      2000,
+    );
+    await flushMicrotasks();
+    expect(calls).toBe(2);
   });
 });

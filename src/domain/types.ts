@@ -14,6 +14,7 @@ export type SessionInfo = {
 export const hookPayloadSchema = z.object({
   session_id: z.string().optional(),
   cwd: z.string().optional(),
+  transcript_path: z.string().optional(),
   hook_event_name: z.string(),
   prompt: z.string().optional(),
   last_assistant_message: z.string().optional(),

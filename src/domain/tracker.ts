@@ -1,7 +1,9 @@
+import { open } from "node:fs/promises";
 import type { HookPayload, SessionInfo, SessionState } from "./types";
 import { sendNotification } from "./notifier";
 
 const PREVIEW_LIMIT = 100;
+const HEAD_READ_BYTES = 64 * 1024;
 
 const toProjectName = (projectPath: string): string => {
   if (!projectPath) {
@@ -40,11 +42,47 @@ const toPreview = (value?: string): string | undefined => {
   return `${chars.slice(0, PREVIEW_LIMIT).join("")}…`;
 };
 
+export type ResolveLaunchCwd = (
+  transcriptPath: string,
+) => Promise<string | undefined>;
+
+const defaultResolveLaunchCwd: ResolveLaunchCwd = async (transcriptPath) => {
+  let fd: Awaited<ReturnType<typeof open>> | undefined;
+  try {
+    fd = await open(transcriptPath, "r");
+    const buffer = Buffer.alloc(HEAD_READ_BYTES);
+    const { bytesRead } = await fd.read(buffer, 0, buffer.length, 0);
+    const text = buffer.subarray(0, bytesRead).toString("utf8");
+    for (const line of text.split("\n")) {
+      if (!line.includes('"cwd"')) continue;
+      try {
+        const json = JSON.parse(line) as { cwd?: unknown };
+        if (typeof json.cwd === "string" && json.cwd.length > 0) {
+          return json.cwd;
+        }
+      } catch {
+        // skip malformed line
+      }
+    }
+  } catch {
+    // file missing or unreadable — fall back to payload.cwd
+  } finally {
+    await fd?.close();
+  }
+  return undefined;
+};
+
+export type CreateTrackerOptions = {
+  resolveLaunchCwd?: ResolveLaunchCwd;
+};
+
 export type SessionTracker = ReturnType<typeof createTracker>;
 
-export const createTracker = () => {
+export const createTracker = (options: CreateTrackerOptions = {}) => {
+  const resolveLaunchCwd = options.resolveLaunchCwd ?? defaultResolveLaunchCwd;
   const sessions = new Map<string, SessionInfo>();
   const listeners = new Set<() => void>();
+  const launchCwdResolved = new Set<string>();
 
   const notify = (): void => {
     for (const listener of listeners) {
@@ -59,13 +97,35 @@ export const createTracker = () => {
     };
   };
 
-  const ensureSession = (sessionId: string, cwd: string | undefined, nowMs: number): SessionInfo => {
+  const applyLaunchCwd = (sessionId: string, cwd: string): void => {
+    const session = sessions.get(sessionId);
+    if (!session) return;
+    if (session.projectPath === cwd) return;
+    session.projectPath = cwd;
+    session.projectName = toProjectName(cwd);
+    notify();
+  };
+
+  const tryResolveLaunchCwd = (
+    sessionId: string,
+    transcriptPath: string | undefined,
+  ): void => {
+    if (!transcriptPath) return;
+    if (launchCwdResolved.has(sessionId)) return;
+    launchCwdResolved.add(sessionId);
+    void resolveLaunchCwd(transcriptPath).then((cwd) => {
+      if (!cwd) return;
+      applyLaunchCwd(sessionId, cwd);
+    });
+  };
+
+  const ensureSession = (
+    sessionId: string,
+    cwd: string | undefined,
+    nowMs: number,
+  ): SessionInfo => {
     const existing = sessions.get(sessionId);
     if (existing) {
-      if (cwd && cwd !== existing.projectPath) {
-        existing.projectPath = cwd;
-        existing.projectName = toProjectName(cwd);
-      }
       return existing;
     }
 
@@ -82,7 +142,10 @@ export const createTracker = () => {
     return created;
   };
 
-  const handleEvent = (payload: HookPayload, nowMs: number = Date.now()): void => {
+  const handleEvent = (
+    payload: HookPayload,
+    nowMs: number = Date.now(),
+  ): void => {
     const sessionId = payload.session_id;
     if (!sessionId) {
       return;
@@ -90,22 +153,17 @@ export const createTracker = () => {
 
     if (payload.hook_event_name === "SessionEnd") {
       sessions.delete(sessionId);
+      launchCwdResolved.delete(sessionId);
       notify();
       return;
     }
 
     const session = ensureSession(sessionId, payload.cwd, nowMs);
     session.lastActivityMs = nowMs;
+    tryResolveLaunchCwd(sessionId, payload.transcript_path);
 
     switch (payload.hook_event_name) {
       case "SessionStart":
-        if (payload.cwd) {
-          session.projectPath = payload.cwd;
-          session.projectName = toProjectName(payload.cwd);
-        } else {
-          session.projectPath = "unknown";
-          session.projectName = "unknown";
-        }
         session.state = "WaitingInput";
         break;
       case "UserPromptSubmit":
